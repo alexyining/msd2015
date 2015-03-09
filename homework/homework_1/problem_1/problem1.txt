@@ -1,0 +1,57 @@
+problem1.txt
+
+                N           G              
+small town      5M+         2.5M        
+large town      1B+         500Mb        
+nation          60B+        30B
+
+N: # of observations 
+G: # of distinct groups 
+
+1.
+in-memory, single machine
+
+group by call pair
+for each group
+    total_time = sum(duration)
+
+2. 
+streaming, single machine
+
+for each observation as (call pair, duration)
+    //identify by call pair, that is
+    //"a calls b" and "b calls a" are identified as  
+    //the same call pair
+
+    if new pair
+        init
+
+    for that particular call pair
+        total_time += duration
+
+total storage cost: 500Mb * sizeof(call pair, total_time)
+
+3. 
+streaming, multiple machines
+
+MapReduce:
+
+    //map
+    for each observation
+        output call pair and duration
+
+    //shuffle
+    collect all records for each call pair
+
+    //reduce
+    add duration for each call pair
+
+
+Difference between three approaches
+    in-memory, single machine: memory is big enough to store all observations, allowing fast process
+
+    streaming, single machine: the size of all observations is too big 
+    for RAM, but it can still store results. Streaming allows fast 
+    processing and eliminates the need to import all observations
+
+
